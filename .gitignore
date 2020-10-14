@@ -1,3 +1,2 @@
-
-nodule_modules/
+node_modules/
 .env
