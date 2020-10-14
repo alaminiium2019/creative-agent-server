@@ -62,6 +62,9 @@ app.post('/adminAddService',(req,res) => {
     const file = req.files.file;
     const name = req.body.name;
     const details = req.body.details;
+    const newImg = file.data;
+    const encImg =newImg.toString('base64');
+
     // console.log(name,details,file);
     // const filePath = `${__dirname}/creatives/${file.name}`;
 
@@ -82,22 +85,13 @@ app.post('/adminAddService',(req,res) => {
             img: Buffer.from(encImg,'base64')
         };
 
-
         addServiceCollection.insertOne({name,details,image})
         .then(result =>{
-            // fs.remove(filePath,error =>{
-                // if(error){
-                    // console.log(error)
-                    // res.status(500).send({msg: 'Failed to upload Image'});
-                // }
                 res.send(result.insertedCount>0)    
             })
            
         })
-        //return res.send({name: file.name, path: `/${file.name}`});
-    
-
-
+        
 
 //get admin service list
 app.get('/adminServiceList',(req,res) =>{
@@ -108,7 +102,23 @@ app.get('/adminServiceList',(req,res) =>{
 
 })
 
+//get orders service list
+app.get('/orderServiceList',(req,res) =>{
+    collection.find({})
+    .toArray((err,documents) => {
+        res.send(documents)
+    })
 
+})
+
+//get orders service list
+app.get('/getService',(req,res) =>{
+    addServiceCollection.find({})
+    .toArray((err,documents) => {
+        res.send(documents)
+    })
+
+})
 
     console.log('db is connected')
 
