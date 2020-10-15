@@ -5,7 +5,8 @@ const cors = require('cors');
 const fs =require('fs-extra');
 const fileUpload = require('express-fileupload');
 
-//const ObjectId = require('mongodb').ObjectId;
+const ObjectId = require('mongodb').ObjectId;
+
 require('dotenv').config()
 
 const app = express()
@@ -19,7 +20,7 @@ app.use(express.static('creatives'));
 app.use(fileUpload());
 
 
-//app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({extended: true}));
 const user = 'creativeUser';
 const pass = 'Bangladesh';
 const databasename ='creativeAgent';
@@ -32,22 +33,15 @@ client.connect(err => {
     const collection = client.db("creativeAgent").collection("courses");
     const reviewCollection = client.db("creativeAgent").collection("reviews");
     const addServiceCollection = client.db("creativeAgent").collection("addservices");
+    const addAdminCollection = client.db("creativeAgent").collection("admins");
+    // const addUserCollection = client.db("creativeAgent").collection("users");
+    
+    
+   
 
 
 
-    //Add review
-
-    // app.post('/addreview',(req,res) => {
-    //     const reviews = req.body;
-    //     console.log(reviews);
-    //     reviewCollection.insertOne(reviews)
-    //     .then(result => {
-    //         res.send(result.insertedCount>0)
-    //     })
-    // })
-
-    //add review
-
+ 
     app.post('/addreview',(req,res) => {
         const file = req.files.file;
         const name = req.body.name;
@@ -65,10 +59,8 @@ client.connect(err => {
             reviewCollection.insertOne({name,company,description,image})
             .then(result =>{
                     res.send(result.insertedCount>0)    
-                })
-               
-            })
-            
+                })               
+            })           
 
 //Add orders
     app.post('/addorders', (req, res) => {
@@ -79,6 +71,19 @@ client.connect(err => {
                 res.send(result.insertedCount > 0)
             })
     })
+
+
+//set admin
+app.post('/addUserAdmin',(req,res) => {
+    const admins = req.body;
+    console.log(admins);
+    addAdminCollection.insertOne(admins)
+    .then(result => {
+        res.send(result.insertedCount > 0);
+    })
+
+})
+
 
 //adminAddServices
 
@@ -142,21 +147,35 @@ app.get('/getReview',(req,res) =>{
 
 })
 
-//admin
+
+//get user
+// app.get('/userList',(req,res) =>{
+//     const user = req.query.email;
+//     collection.find({email:user})
+//     .toArray((err,documents) => {
+//         res.send(documents)
+//         if(err){
+//             console.log(err)
+//         }
+//     })
+        
+//     })
+
+//get admin
+app.get('/getAdmins',(req,res) => {
+    addAdminCollection.find({})
+    .toArray((err,documents) =>{
+        res.send(documents);
+    })
+
+})
 
 
-// app.post('/isDoctor', (req, res) => {
-//     const email = req.body.email;
-//     collection.find({ email: email })
-//         .toArray((err, doctors) => {
-//             res.send(doctors.length > 0);
-//         })
-// })
     console.log('db is connected')
 
 });
 
-
+//set admin
 app.get('/', (req, res) => {
     res.send("Creative agency database is working")
 });
