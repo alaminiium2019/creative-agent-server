@@ -56,10 +56,8 @@ client.connect(err => {
         const newImg = file.data;
         const encImg =newImg.toString('base64');
     
-            var image ={
-                // contentType: req.files.file.mimetype,
+            var image ={                
                 contentType: file.mimetype,
-                // size:req.files.file.size,
                 size:file.size,
                 img: Buffer.from(encImg,'base64')
             };
